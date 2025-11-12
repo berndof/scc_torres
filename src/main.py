@@ -21,8 +21,8 @@ docs_url = "/docs" if APP_ENV == "dev" else None
 
 app = FastAPI(lifespan=lifespan, docs_url=docs_url)
 
-api_root_router = APIRouter(prefix="/v1")
-api_root_router.include_router(identity_router)
+root_api_router = APIRouter(prefix="/v1")
+root_api_router.include_router(identity_router)
 
 app.add_middleware(
     CORSMiddleware,
@@ -32,16 +32,4 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(api_root_router)
-
-""" if __name__ == "__main__":
-    uvicorn.run(
-        app="main:app",
-        host=APP_LISTEN_ADDR,
-        port=APP_LISTEN_PORT,
-        # log_config=LOGGING_CONFIG,
-        reload=True,
-        loop="uvloop",
-        reload_dirs=["src/"],
-        reload_delay=1.0,
-    ) """
+app.include_router(root_api_router)

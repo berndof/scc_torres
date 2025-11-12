@@ -6,6 +6,7 @@ import uvicorn
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 from core.config import APP_LISTEN_ADDR, APP_LISTEN_PORT
+from core.loader import load_modules
 
 if __name__ == "__main__":
     uvicorn.run(
