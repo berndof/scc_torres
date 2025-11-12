@@ -5,5 +5,5 @@ services:
     #environment:
       #POSTGRES_HOST_AUTH_METHOD: trust  
     volumes:
-      - /var/lib/postgresql/data
+      - /var/lib/postgresql
 
