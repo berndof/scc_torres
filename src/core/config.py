@@ -7,6 +7,11 @@ APP_LISTEN_ADDR = os.environ.get("APP_LISTEN_ADDR", "0.0.0.0")
 APP_LISTEN_PORT = int(os.environ.get("APP_LISTEN_PORT", "8000"))
 APP_ENV = os.environ.get("APP_ENV", "dev").lower()
 
+LDAP_BASE_DN = os.environ.get("LDAP_BASE_DN")
+LDAP_BIND_PASSWORD = os.environ.get("LDAP_BIND_PASSWORD")
+LDAP_BIND_USER = os.environ.get("LDAP_BIND_USER")
+LDAP_SERVER = os.environ.get("LDAP_SERVER")
+LDAP_USE_SSL = True
 
 POSTGRES_USER = os.environ.get("POSTGRES_USER")
 POSTGRES_PASSWORD = os.environ.get("POSTGRES_PASSWORD")
