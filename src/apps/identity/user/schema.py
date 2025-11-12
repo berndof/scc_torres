@@ -13,7 +13,8 @@ class UserCreate(BaseSchema):
 
     @field_validator("password")
     @classmethod
-    def hash_password(cls, password: str) -> str:
+    def validate_password(cls, password: str) -> str:
+        password.encode("utf-8")
         return hash_password(password)
 
 
@@ -21,3 +22,7 @@ class UserResponse(ModelSchema):
     id: UUID
     username: str
     email: str
+
+
+class UserIsMe(UserResponse):
+    password: str

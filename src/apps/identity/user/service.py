@@ -10,3 +10,4 @@ class UserService:
     async def create(self, data: UserCreate):
         user = User(username=data.username, email=data.email, password=data.password)
         return await self.repo.create(user)
+        # Handle erro de repetidos

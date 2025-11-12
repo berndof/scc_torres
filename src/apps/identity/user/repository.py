@@ -14,6 +14,10 @@ class UserRepository:
         )
         return result.scalar_one_or_none()
 
+    async def get_by_id(self, id):
+        result = await self.dbSession.execute(select(User).where(User.id == id))
+        return result.scalar_one_or_none()
+
     async def create(self, user: User):
         self.dbSession.add(user)
         await self.dbSession.commit()

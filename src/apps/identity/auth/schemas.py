@@ -6,3 +6,8 @@ from core.schema import BaseSchema
 class UserLoginRequest(BaseSchema):
     username: str
     password: str
+
+
+class AccessToken(BaseSchema):
+    token: str
+    token_type: str = "bearer"
