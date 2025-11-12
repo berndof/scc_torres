@@ -5,6 +5,8 @@ from dotenv import load_dotenv
 load_dotenv()
 APP_LISTEN_ADDR = os.environ.get("APP_LISTEN_ADDR", "0.0.0.0")
 APP_LISTEN_PORT = int(os.environ.get("APP_LISTEN_PORT", "8000"))
+APP_ENV = os.environ.get("APP_ENV", "dev").lower()
+
 
 POSTGRES_USER = os.environ.get("POSTGRES_USER")
 POSTGRES_PASSWORD = os.environ.get("POSTGRES_PASSWORD")

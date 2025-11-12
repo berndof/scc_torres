@@ -1,4 +1,4 @@
 dev:
-	@uv run --env-file .env ./src/main.py
+	@uv run --env-file .env ./scripts/dev.py
 	
 .PHONY: dev

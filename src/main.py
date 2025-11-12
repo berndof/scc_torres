@@ -5,7 +5,7 @@ from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from apps.identity.app import app_router as identity_router
-from core.config import APP_LISTEN_ADDR, APP_LISTEN_PORT
+from core.config import APP_ENV
 
 
 @asynccontextmanager
@@ -17,7 +17,9 @@ async def lifespan(app: FastAPI):
         raise
 
 
-app = FastAPI(lifespan=lifespan, redoc_url=None, openapi_url=None)
+docs_url = "/docs" if APP_ENV == "dev" else None
+
+app = FastAPI(lifespan=lifespan, docs_url=docs_url)
 
 api_root_router = APIRouter(prefix="/v1")
 api_root_router.include_router(identity_router)
@@ -32,7 +34,7 @@ app.add_middleware(
 
 app.include_router(api_root_router)
 
-if __name__ == "__main__":
+""" if __name__ == "__main__":
     uvicorn.run(
         app="main:app",
         host=APP_LISTEN_ADDR,
@@ -42,4 +44,4 @@ if __name__ == "__main__":
         loop="uvloop",
         reload_dirs=["src/"],
         reload_delay=1.0,
-    )
+    ) """
