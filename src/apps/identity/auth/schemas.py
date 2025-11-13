@@ -9,5 +9,5 @@ class UserLoginRequest(BaseSchema):
 
 
 class AccessToken(BaseSchema):
-    token: str
+    access_token: str
     token_type: str = "bearer"

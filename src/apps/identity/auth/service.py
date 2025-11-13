@@ -75,4 +75,4 @@ class AuthService:
     def get_access_token(self, user_id):
         session_payload = {"sub": str(user_id)}
         token = create_access_token(session_payload)
-        return AccessToken(token=token)
+        return AccessToken(access_token=token)
