@@ -1,15 +1,19 @@
-from uuid import uuid4
+from logging import getLogger
 
 from fastapi import HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
-from ldap3 import ALL, NTLM, Connection, Server
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from apps.identity.user.model import User
 from apps.identity.user.repository import UserRepository
-from core import ldap_client
+from apps.identity.user.schema import UserCreate
+from core.ldap_client import ldap_get_user_info
 from core.security import create_access_token, verify_password
 
 from .schemas import AccessToken
+
+logger = getLogger("app.auth.service")
+logger.setLevel("DEBUG")
 
 
 class AuthService:
@@ -18,19 +22,57 @@ class AuthService:
         self.user_repo = UserRepository(self.dbSession)
 
     async def login(self, data: OAuth2PasswordRequestForm) -> AccessToken:
+        login_type = "local"
+        if data.scopes and len(data.scopes) >= 0:
+            login_type = data.scopes[0]
+        logger.debug(f"login type: {login_type}")
+        if login_type == "local":
+            return await self.local_login(data)
+        if login_type == "ldap":
+            return await self.ldap_login(data)
+        else:
+            raise HTTPException(401, "metodo de login nao é suportado")
+
+    async def local_login(self, data: OAuth2PasswordRequestForm) -> AccessToken:
         user = await self.user_repo.get_by_username(username=data.username)
+        if user:
+            if not verify_password(data.password, user.password):
+                raise HTTPException(401, "Wrong password")
+        else:
+            raise HTTPException(401, "User Not Found")
+
+        return self.get_access_token(user.id)
+
+    async def ldap_login(self, data: OAuth2PasswordRequestForm) -> AccessToken:
+        username = str(data.username).lower()
+        password = data.password
+
+        try:
+            ldap_user_data = await ldap_get_user_info(username, password)
+            logger.debug(ldap_user_data)
+        except:
+            # logger.error("PROBLEMA COLETANDO OS DADOS DO USUARIO")
+            raise
+
+        user = await self.user_repo.get_by_username(username, from_ad=True)
         if not user:
-            # raise HTTPException(401, "User not found")
-            # tenta buscar o user no ad
-            user = await ldap_client.authenticate_user(data.username, data.password)
-            print(user)
-            raise HTTPException(401, "User not found")
+            # logger.debug("VAI TER QUE CRIAR USUARIO")
+            new_user_data = UserCreate(
+                username=username, password="stored_on_ad", from_ad=True
+            )
 
-        if not verify_password(data.password, user.password):
-            raise HTTPException(401, "Wrong password")
+            user = await self.user_repo.create(User(**new_user_data.model_dump()))
 
-        # se passou cria a sessão
-        # session_id: str = str(uuid4().hex)
-        session_payload = {"sub": str(user.id)}
+            # logger.debug("USUÁRIO DO AD CRIADO NO SISTEMA")
+
+            # se o user ja existir, atualizar as informações consumindo o ldap_user_data
+
+        if type(user) is not User:
+            raise Exception("USER NAO FOI CRIADO ")
+        # logger.debug("ACHOU USUARIO")
+        return self.get_access_token(user.id)
+
+    def get_access_token(self, user_id):
+        session_payload = {"sub": str(user_id)}
         token = create_access_token(session_payload)
         return AccessToken(token=token)

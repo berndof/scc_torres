@@ -5,7 +5,13 @@ from apps.identity.user.repository import UserRepository
 from core.db import AsyncSession, get_db_session
 from core.security import decode_token
 
-oauth2_schema = OAuth2PasswordBearer(tokenUrl="v1/auth/token")
+oauth2_schema = OAuth2PasswordBearer(
+    tokenUrl="v1/auth/token",
+    scopes={
+        "ldap": "Autenticação via AD",
+        "local": "Autenticação com usuário do sistema",
+    },
+)
 
 
 async def get_current_user(

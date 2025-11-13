@@ -33,9 +33,9 @@ HANDLERS = {
 }
 
 DEV_LOGGERS = {
-    "uvicorn.error": {
+    "uvicorn": {
         "handlers": ["console"],
-        "level": "INFO",
+        "level": "DEBUG",
         "propagate": False,
     },
     "app": {"handlers": ["console"], "level": "DEBUG", "propagate": False},
@@ -46,6 +46,6 @@ LOG_CONFIG = {
     "disable_existing_loggers": False,
     "formatters": FORMATTERS,
     "handlers": HANDLERS,
-    "root": {"handlers": ["console"], "level": "CRITICAL", "propagate": True},
+    "root": {"handlers": ["console"], "level": "CRITICAL"},
     "loggers": DEV_LOGGERS,
 }

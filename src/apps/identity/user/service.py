@@ -8,6 +8,6 @@ class UserService:
         self.repo = repo
 
     async def create(self, data: UserCreate):
-        user = User(username=data.username, email=data.email, password=data.password)
+        user = User(**data.model_dump())
         return await self.repo.create(user)
         # Handle erro de repetidos
