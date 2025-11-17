@@ -4,10 +4,11 @@ from typing import TYPE_CHECKING
 from sqlalchemy import Boolean, ForeignKey, String, Uuid
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from apps.identity.group.model import group_members
 from core.orm import BaseORM
 
 if TYPE_CHECKING:
-    from apps.identity.group.model import Group, group_members
+    from apps.identity.group.model import Group
 
 
 class User(BaseORM):
@@ -28,5 +29,5 @@ class User(BaseORM):
     from_ad: Mapped[bool] = mapped_column(Boolean(), default=False, nullable=False)
 
     groups: Mapped[list["Group"]] = relationship(
-        "Group", secondary="group_members", back_populates="members", lazy="selectin"
+        "Group", secondary=group_members, back_populates="members", lazy="selectin"
     )
