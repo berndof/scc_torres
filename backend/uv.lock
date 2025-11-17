@@ -109,6 +109,7 @@ dependencies = [
     { name = "passlib" },
     { name = "python-jose" },
     { name = "sqlalchemy", extra = ["asyncio"] },
+    { name = "uvicorn" },
 ]
 
 [package.metadata]
@@ -121,6 +122,7 @@ requires-dist = [
     { name = "passlib", specifier = ">=1.7.4" },
     { name = "python-jose", specifier = ">=3.5.0" },
     { name = "sqlalchemy", extras = ["asyncio"], specifier = ">=2.0.44" },
+    { name = "uvicorn", specifier = ">=0.38.0" },
 ]
 
 [[package]]
