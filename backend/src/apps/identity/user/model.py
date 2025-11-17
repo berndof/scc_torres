@@ -19,7 +19,7 @@ class User(BaseORM):
         String(50), unique=True, nullable=False, index=True
     )
     password: Mapped[str] = mapped_column(
-        String(50), nullable=False
+        String(255), nullable=False
     )  # set nullable para true
 
     # email: Mapped[str] = mapped_column(
