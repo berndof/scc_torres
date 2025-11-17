@@ -1,7 +1,5 @@
 .venv/
 .env
-*/__pycache__/
+*__pycache__/
 alembic/versions/*
 !alembic/versions/.gitkeep
-.env*
-!.env.example
