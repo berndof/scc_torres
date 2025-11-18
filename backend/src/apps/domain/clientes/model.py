@@ -7,7 +7,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from core.orm import BaseORM, OptionalEnderecoMixin, StatusMixin, TimeStampMixin
 
 
-class Clientes(BaseORM, OptionalEnderecoMixin, StatusMixin, TimeStampMixin):
+class Cliente(BaseORM, OptionalEnderecoMixin, StatusMixin, TimeStampMixin):
     class TipoClienteEnum(enum.Enum):
         PF = "pf"
         PJ = "pj"
@@ -33,3 +33,5 @@ class Clientes(BaseORM, OptionalEnderecoMixin, StatusMixin, TimeStampMixin):
     tipo: Mapped[TipoClienteEnum] = mapped_column(Enum(TipoClienteEnum), nullable=False)
     cpf: Mapped[int] = mapped_column(Integer, unique=True, nullable=True)
     cnpj: Mapped[int] = mapped_column(Integer, unique=True, nullable=True)
+
+    # TODO add contato info
