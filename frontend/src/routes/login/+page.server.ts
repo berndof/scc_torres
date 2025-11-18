@@ -1,10 +1,29 @@
 import type { Actions } from './$types';
 import { redirect, fail} from '@sveltejs/kit';
-import { do_login_request } from "$lib/server/auth"
+import { API_BASE_URL } from '$env/static/private';
 
 export const actions = {
     login: async (event) => {
-    const res = await do_login_request(event)
+  
+      const API_LOGIN_URL = `${API_BASE_URL}/auth/token`;
+      const formData = await event.request.formData();
+
+    const body = new URLSearchParams();
+    body.append("grant_type", "password");
+    body.append("username", formData.get("username") as string);
+    body.append("password", formData.get("password") as string);
+    body.append("scope", formData.get("scope") as string);
+    body.append("client_id", "string") //TODO
+    body.append("client_secret", "string")
+
+    const res = await event.fetch(API_LOGIN_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "accept": "application/json"
+      },
+      body
+    });
     const data = await res.json();
     //tratar resposta
     if (!res.ok) {

@@ -30,6 +30,9 @@ def _connect(username: str, password: str):
         )
         yield conn
         conn.unbind()
+    # except :  LDAPBindError: automatic bind not successful - invalidCredentials
+    # TODO
+
     except Exception as e:
         logger.warning("ERRO NA CONEXÃO DO LDAP")
         raise e

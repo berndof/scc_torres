@@ -2,6 +2,7 @@
 	import { Button } from "$lib/components/ui/button/index.js";
 	import * as Select from "$lib/components/ui/select/index.js";
 	import * as Card from "$lib/components/ui/card/index.js";
+
 	import {
 		FieldGroup,
 		Field,
@@ -13,13 +14,29 @@
 	import { cn } from "$lib/utils.js";
 	import type { HTMLAttributes } from "svelte/elements";
 
-	let { class: className, ...restProps }: HTMLAttributes<HTMLDivElement> = $props();
+	//let form;
+
+
+    // Pegamos TODOS os props numa tacada só
+    const allProps = $props();
+
+    // Extrair props customizados primeiro
+    export const form = allProps.form;
+
+    // Remover o form do objeto para o restProps não carregá-lo
+    const { form: _ignore, class: className, ...restProps } =
+        allProps as HTMLAttributes<HTMLDivElement> & { form?: unknown };
+
+
+	//let { class: className, ...restProps }: HTMLAttributes<HTMLDivElement> = $props();
 
 	const id = $props.id();
 
 	let username = $state("");
 	let password = $state("");
 	let scope = $state("local");
+
+
 
 </script>
 
