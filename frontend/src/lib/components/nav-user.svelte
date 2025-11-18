@@ -10,7 +10,8 @@
 	import LogOutIcon from "@lucide/svelte/icons/log-out";
 	import SparklesIcon from "@lucide/svelte/icons/sparkles";
 
-	let { user }: { user: { name: string; email: string; avatar: string } } = $props();
+	let { user }: { user: { username: string } } = $props();
+	//let user = $props();
 	const sidebar = useSidebar();
 </script>
 
@@ -45,12 +46,12 @@
 				<DropdownMenu.Label class="p-0 font-normal">
 					<div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
 						<Avatar.Root class="size-8 rounded-lg">
-							<Avatar.Image src={user.avatar} alt={user.name} />
+							<!-- <Avatar.Image src={user.avatar} alt={user.name} /> -->
 							<Avatar.Fallback class="rounded-lg">CN</Avatar.Fallback>
 						</Avatar.Root>
 						<div class="grid flex-1 text-left text-sm leading-tight">
-							<span class="truncate font-medium">{user.name}</span>
-							<span class="truncate text-xs">{user.email}</span>
+							<span class="truncate font-medium">{user.username}</span> 
+							<!-- <span class="truncate text-xs">{user.email}</span> -->
 						</div>
 					</div>
 				</DropdownMenu.Label>

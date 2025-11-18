@@ -9,7 +9,7 @@ from core.security import hash_password
 class UserCreate(BaseSchema):
     username: str
     password: str
-    from_ad: bool = False
+
     # email: EmailStr
 
     @field_validator("password")
@@ -22,8 +22,10 @@ class UserCreate(BaseSchema):
 class UserResponse(ModelSchema):
     id: UUID
     username: str
-    from_ad: bool
     # email: str
+
+
+class NewUserResponse(UserResponse): ...
 
 
 class UserIsMe(UserResponse):

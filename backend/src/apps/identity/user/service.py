@@ -1,14 +1,19 @@
 from .model import User
-from .repository import UserRepository
-from .schema import UserCreate
+from .schema import NewUserResponse, UserCreate
 
 
 class UserService:
     def __init__(self, dbSession):
         self.dbSession = dbSession
-        self.user_repo = UserRepository(dbSession)
 
     async def create(self, data: UserCreate):
-        user = User(**data.model_dump())
-        return await self.user_repo.create(user)
+        new_user = User(**data.model_dump())
         # Handle erro de repetidos
+        # TODO
+        self.dbSession.add(new_user)
+
+        await self.dbSession.commit()
+        await self.dbSession.refresh(new_user)
+
+        response = NewUserResponse.model_validate(new_user)
+        return response
