@@ -10,50 +10,43 @@
 	import Settings2Icon from "@lucide/svelte/icons/settings-2";
 	import SquareTerminalIcon from "@lucide/svelte/icons/square-terminal";
 	// This is sample data.
-	///export let data;
-
-	/* user: {
-		name: "shadcn",
-		email: "m@example.com",
-		avatar: "/avatars/shadcn.jpg",
-	}, */
-	export let teams = [
-			{
-				name: "Acme Inc",
-				logo: GalleryVerticalEndIcon,
-				plan: "Enterprise",
-			},
-			{
-				name: "Acme Corp.",
-				logo: AudioWaveformIcon,
-				plan: "Startup",
-			},
-			{
-				name: "Evil Corp.",
-				logo: CommandIcon,
-				plan: "Free",
-			},
-	]
-
-	export let navMain: [
+	const data = {
+		teams: [
+		{
+			name: "Acme Inc",
+			logo: GalleryVerticalEndIcon,
+			plan: "Enterprise",
+		},
+		{
+			name: "Acme Corp.",
+			logo: AudioWaveformIcon,
+			plan: "Startup",
+		},
+		{
+			name: "Evil Corp.",
+			logo: CommandIcon,
+			plan: "Free",
+		},
+		],
+		navMain: [
 		{
 			title: "Playground",
 			url: "#",
 			icon: SquareTerminalIcon,
 			isActive: true,
 			items: [
-				{
-					title: "History",
-					url: "#",
-				},
-				{
-					title: "Starred",
-					url: "#",
-				},
-				{
-					title: "Settings",
-					url: "#",
-				},
+			{
+				title: "History",
+				url: "#",
+			},
+			{
+				title: "Starred",
+				url: "#",
+			},
+			{
+				title: "Settings",
+				url: "#",
+			},
 			],
 		},
 		{
@@ -61,18 +54,18 @@
 			url: "#",
 			icon: BotIcon,
 			items: [
-				{
-					title: "Genesis",
-					url: "#",
-				},
-				{
-					title: "Explorer",
-					url: "#",
-				},
-				{
-					title: "Quantum",
-					url: "#",
-				},
+			{
+				title: "Genesis",
+				url: "#",
+			},
+			{
+				title: "Explorer",
+				url: "#",
+			},
+			{
+				title: "Quantum",
+				url: "#",
+			},
 			],
 		},
 		{
@@ -80,22 +73,22 @@
 			url: "#",
 			icon: BookOpenIcon,
 			items: [
-				{
-					title: "Introduction",
-					url: "#",
-				},
-				{
-					title: "Get Started",
-					url: "#",
-				},
-				{
-					title: "Tutorials",
-					url: "#",
-				},
-				{
-					title: "Changelog",
-					url: "#",
-				},
+			{
+				title: "Introduction",
+				url: "#",
+			},
+			{
+				title: "Get Started",
+				url: "#",
+			},
+			{
+				title: "Tutorials",
+				url: "#",
+			},
+			{
+				title: "Changelog",
+				url: "#",
+			},
 			],
 		},
 		{
@@ -103,27 +96,26 @@
 			url: "#",
 			icon: Settings2Icon,
 			items: [
-				{
-					title: "General",
-					url: "#",
-				},
-				{
-					title: "Team",
-					url: "#",
-				},
-				{
-					title: "Billing",
-					url: "#",
-				},
-				{
-					title: "Limits",
-					url: "#",
-				},
+			{
+				title: "General",
+				url: "#",
+			},
+			{
+				title: "Team",
+				url: "#",
+			},
+			{
+				title: "Billing",
+				url: "#",
+			},
+			{
+				title: "Limits",
+				url: "#",
+			},
 			],
 		},
-	]
-	
-	export let projects = [
+		],
+		projects: [
 		{
 			name: "Design Engineering",
 			url: "#",
@@ -139,10 +131,8 @@
 			url: "#",
 			icon: MapIcon,
 		},
-	]
-	
-
-	
+		],
+	};
 </script>
 
 <script lang="ts">
@@ -152,26 +142,23 @@
 	import TeamSwitcher from "./team-switcher.svelte";
 	import * as Sidebar from "$lib/components/ui/sidebar/index.js";
 	import type { ComponentProps } from "svelte";
-
+	import { getContext } from "svelte";
 	let {
 		ref = $bindable(null),
 		collapsible = "icon",
 		...restProps
 	}: ComponentProps<typeof Sidebar.Root> = $props();
 
-	console.log(restProps)
-
-	export const user = restProps.user;
-
+    const user: { username: string } = getContext("user"); // 🔥 agora funciona sem props
 </script>
 
 <Sidebar.Root {collapsible} {...restProps}>
 	<Sidebar.Header>
-		<!-- <TeamSwitcher teams={data.teams} /> -->
+	 	<TeamSwitcher teams={data.teams} />
 	</Sidebar.Header>
 	<Sidebar.Content>
-		<NavMain items={navMain} />
-		<NavProjects projects={projects} />
+		<NavMain items={data.navMain} />
+		<NavProjects projects={data.projects} />
 	</Sidebar.Content>
 	<Sidebar.Footer>
 		<NavUser user={user} />

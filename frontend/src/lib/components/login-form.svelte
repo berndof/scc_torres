@@ -32,11 +32,10 @@
 
 	const id = $props.id();
 
-	let username = $state("");lang
+	let username = $state("");
 	let password = $state("");
 	let scope = $state("local");
 
-lang
 
 </script>
 

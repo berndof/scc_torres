@@ -11,9 +11,9 @@ class UserService:
         # Handle erro de repetidos
         # TODO
         self.dbSession.add(new_user)
+        await self.dbSession.refresh(new_user)
 
         await self.dbSession.commit()
-        await self.dbSession.refresh(new_user)
 
         response = NewUserResponse.model_validate(new_user)
         return response
