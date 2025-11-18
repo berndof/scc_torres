@@ -30,6 +30,6 @@ class Clientes(BaseORM, OptionalEnderecoMixin, StatusMixin, TimeStampMixin):
     name: Mapped[str] = mapped_column(
         String(100), nullable=False, unique=True, index=True
     )
-    tipo: Mapped[TipoClienteEnum] = mapped_column(Enum, nullable=False)
+    tipo: Mapped[TipoClienteEnum] = mapped_column(Enum(TipoClienteEnum), nullable=False)
     cpf: Mapped[int] = mapped_column(Integer, unique=True, nullable=True)
     cnpj: Mapped[int] = mapped_column(Integer, unique=True, nullable=True)

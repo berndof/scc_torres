@@ -40,7 +40,7 @@ class StatusMixin:
         DELETED = "deleted"
 
     status: Mapped[StatusEnum] = mapped_column(
-        Enum, default=StatusEnum.ENABLE, nullable=False
+        Enum(StatusEnum), default=StatusEnum.ENABLE, nullable=False
     )
 
     def disable(self):
