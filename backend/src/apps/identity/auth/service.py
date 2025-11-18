@@ -2,6 +2,7 @@ from logging import getLogger
 
 from fastapi import HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
+from ldap3.core.exceptions import LDAPBindError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from apps.identity.user.model import User
@@ -50,6 +51,10 @@ class AuthService:
         try:
             ldap_user_data = await ldap_get_user_info(username, password)
             logger.debug(ldap_user_data)
+            # LDAPBindError: automatic bind not successful - invalidCredentials
+        except LDAPBindError:
+            raise HTTPException(401, "Credencias Incorretas")
+
         except:
             # logger.error("PROBLEMA COLETANDO OS DADOS DO USUARIO")
             raise

@@ -34,7 +34,7 @@ def _connect(username: str, password: str):
     # TODO
 
     except Exception as e:
-        logger.warning("ERRO NA CONEXÃO DO LDAP")
+        # logger.warning("ERRO NA CONEXÃO DO LDAP")
         raise e
 
 
