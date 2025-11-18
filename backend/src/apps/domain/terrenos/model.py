@@ -3,16 +3,13 @@
 from sqlalchemy import Boolean, Float, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column
 
-from core.orm import BaseORM
+from core.orm import BaseORM, GeolocationMixin, StatusMixin, TimeStampMixin
 
 
-class Terreno(BaseORM):
+class Terreno(BaseORM, StatusMixin, TimeStampMixin, GeolocationMixin):
     __tablename__ = "terrenos"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
-    latitude: Mapped[float] = mapped_column(Float, nullable=False, unique=True)
-    longitude: Mapped[float] = mapped_column(Float, nullable=False, unique=True)
-    endereco: Mapped[str] = mapped_column(String(255), nullable=True)  # opcional
 
     # TODO
     # audit

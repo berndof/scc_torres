@@ -5,13 +5,13 @@ from sqlalchemy import Boolean, ForeignKey, String, Uuid
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from apps.identity.group.model import group_members
-from core.orm import BaseORM
+from core.orm import BaseORM, StatusMixin, TimeStampMixin
 
 if TYPE_CHECKING:
     from apps.identity.group.model import Group
 
 
-class User(BaseORM):
+class User(BaseORM, StatusMixin, TimeStampMixin):
     __tablename__ = "users"
 
     id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=uuid.uuid4)
