@@ -28,7 +28,7 @@ class UserService:
     async def get_by_id(self, id: str):
         stmt = select(User).where(User.id == id)
         result = await self.dbSession.execute(stmt)
-        user = result.scalar_on_or_none()
+        user = result.scalar_one_or_none()
         return user
 
     async def get_by_username(self, username: str, from_ad: bool = False):
