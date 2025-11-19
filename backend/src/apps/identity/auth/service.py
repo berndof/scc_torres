@@ -6,7 +6,6 @@ from ldap3.core.exceptions import LDAPBindError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from apps.identity.user.model import User
-from apps.identity.user.schema import UserCreate
 from apps.identity.user.service import UserService
 from core.ldap_client import ldap_get_user_info
 from core.security import create_access_token, verify_password
@@ -67,7 +66,31 @@ class AuthService:
             # logger.debug("VAI TER QUE CRIAR USUARIO")
             # TODO pegar dados novos do usuário
 
-            new_user = User(username=username, password="stored_on_ad")
+            full_name = str(ldap_user_data.get("displayName"))
+            """ # Validação crítica: Se não tiver nome, é melhor levantar um erro ou usar um fallback.
+            if not full_name:
+                # Se for realmente necessário, você pode tentar parsear o DN como fallback.
+                # Ex: "CN=Bernardo Busin Guimarães,..."
+                dn_name_part = ldap_entry["dn"].split(',')[0].replace('CN=', '')
+                full_name = dn_name_part if dn_name_part else "Nome Desconhecido" """
+            name_parts = full_name.split(maxsplit=1)
+            first_name = name_parts[0] if name_parts else ""
+            # Se houver mais de uma parte (sobrenome), pega o resto; senão, usa a primeira parte como sobrenome (fallback)
+            last_name = name_parts[1] if len(name_parts) > 1 else first_name
+
+            ##TODO
+            telefone = None
+            email = ldap_user_data.get("mail")
+
+            new_user = User(
+                username=username,
+                password="stored_on_ad",
+                from_ad=True,
+                first_name=first_name,
+                last_name=last_name,
+                telefone=telefone,
+                email=email,
+            )
 
             # Handle erro de repetidos
             # TODO
@@ -76,7 +99,7 @@ class AuthService:
             await self.dbSession.commit()
             await self.dbSession.refresh(new_user)
             # logger.debug("USUÁRIO DO AD CRIADO NO SISTEMA")
-
+            # TODO
             # se o user ja existir, atualizar as informações consumindo o ldap_user_data
 
         if type(user) is not User:

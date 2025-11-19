@@ -54,18 +54,13 @@ def _get_user_info(username: str, password: str):
             0
         ]  # Verificar a len ? pelo menos esse deve ter se não daria erro na conexão, auto_bind
 
+    logger.debug(f"entry LDAP : {entry}")
+
     result = {
         "dn": entry.distinguishedName.value,
         "displayName": entry.displayName.value if "displayName" in entry else None,
         "mail": entry.mail.value if "mail" in entry else None,
         "memberOf": entry.memberOf.values if "memberOf" in entry else [],
-        "givenName": entry.givenName.value
-        if "givenName" in entry
-        else None,  # Para first_name
-        "sn": entry.sn.value if "sn" in entry else None,  # Para last_name
-        "telephoneNumber": entry.telephoneNumber.value
-        if "telephoneNumber" in entry
-        else None,  # Para telefone
     }
 
     return result
