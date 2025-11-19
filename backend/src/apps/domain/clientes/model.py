@@ -1,10 +1,11 @@
 # import uuid
 import enum
+from datetime import datetime
 
-from sqlalchemy import Boolean, Enum, Float, ForeignKey, Integer, String
+from sqlalchemy import DateTime, Enum, Float, ForeignKey, Integer, String, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from core.orm import BaseORM, StatusMixin, TimeStampMixin
+from core.orm import BaseORM, ObjectStatus
 
 
 class TipoCliente(enum.Enum):
@@ -12,15 +13,11 @@ class TipoCliente(enum.Enum):
     PJ = "pj"
 
 
-class Cliente(BaseORM, StatusMixin, TimeStampMixin):
+class Cliente(BaseORM):
     __tablename__ = "clientes"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
 
     # property name = fullname se pf razao_social se pj
-    """  name: Mapped[str] = mapped_column(
-        String(100), nullable=False, unique=True, index=True
-    ) """
-
     tipo: Mapped[TipoCliente] = mapped_column(Enum(TipoCliente), nullable=False)
 
     # Define polimorfismo
@@ -29,10 +26,21 @@ class Cliente(BaseORM, StatusMixin, TimeStampMixin):
         "polymorphic_identity": "cliente",  # opcional, mas deixa explicito
     }
 
+    status: Mapped[ObjectStatus] = mapped_column(
+        Enum(ObjectStatus), default=ObjectStatus.ENABLE, nullable=False
+    )
+
     # Endereços (mesmo para PF e PJ)
     enderecos: Mapped[list["ClienteEndereco"]] = relationship(
         back_populates="cliente",
         cascade="all, delete-orphan",
+    )
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), server_onupdate=func.now()
     )
 
 
@@ -50,10 +58,13 @@ class ClientePessoa(Cliente):
 
     first_name: Mapped[str] = mapped_column(String(120), nullable=False)
     last_name: Mapped[str] = mapped_column(String(120), nullable=False)
-    telefone: Mapped[str | None]
-    email: Mapped[str | None]
 
-    cpf: Mapped[str] = mapped_column(String(14), nullable=False, unique=True)
+    telefone: Mapped[int] = mapped_column(Integer(), nullable=True)
+    email: Mapped[str] = mapped_column(
+        String(100), nullable=True, index=True, unique=True
+    )
+
+    cpf: Mapped[int] = mapped_column(Integer(), nullable=False, unique=True)
 
     __mapper_args__ = {"polymorphic_identity": TipoCliente.PF}
 
@@ -74,8 +85,8 @@ class ClienteEmpresa(Cliente):
         cascade="all, delete-orphan",
     )
 
-    telefone: Mapped[str | None]
-    email: Mapped[str | None]
+    telefone: Mapped[int] = mapped_column(Integer(), nullable=False)
+    email: Mapped[str] = mapped_column(String(100), nullable=True, index=True)
 
     __mapper_args__ = {"polymorphic_identity": TipoCliente.PJ}
 
@@ -95,8 +106,8 @@ class ClienteEmpresaContato(BaseORM):
 
     first_name: Mapped[str] = mapped_column(String(120), nullable=False)
     last_name: Mapped[str] = mapped_column(String(120), nullable=False)
-    telefone: Mapped[str | None]
-    email: Mapped[str | None]
+    telefone: Mapped[int] = mapped_column(Integer(), nullable=False)
+    email: Mapped[str] = mapped_column(String(100), nullable=True, index=True)
 
     empresa: Mapped["ClienteEmpresa"] = relationship(back_populates="contatos")
 
@@ -120,3 +131,6 @@ class ClienteEndereco(BaseORM):
     cep: Mapped[int | None] = mapped_column(Integer)
 
     cliente: Mapped["Cliente"] = relationship(back_populates="enderecos")
+
+    latitude: Mapped[float] = mapped_column(Float, nullable=True)
+    longitude: Mapped[float] = mapped_column(Float, nullable=True)
