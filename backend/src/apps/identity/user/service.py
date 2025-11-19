@@ -23,8 +23,7 @@ class UserService:
         await self.dbSession.commit()
         await self.dbSession.refresh(new_user)
 
-        response = NewUserResponse.model_validate(new_user)
-        return response
+        return new_user
 
     async def get_by_id(self, id: str):
         stmt = select(User).where(User.id == id)

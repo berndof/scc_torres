@@ -2,8 +2,8 @@ from logging import getLogger
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from .model import ClientePessoa
-from .schema import ClientePessoaCreate, ClienteResponse
+from .model import ClienteEndereco, ClientePessoa
+from .schema import ClientePessoaCreate
 
 logger = getLogger("app.cliente.service")
 # logger.setLevel("DEBUG")
@@ -32,14 +32,25 @@ class ClienteService:
 
     async def cliente_pessoa_create(self, data: ClientePessoaCreate):
         payload = data.model_dump()
-        data_enderecos = payload.pop("enderecos")
+        data_endereco = payload.pop("endereco")
 
         cliente_pessoa = ClientePessoa(**payload)
         self.dbSession.add(cliente_pessoa)
+        await self.dbSession.flush()
+        # logger.debug(cliente_pessoa)
+
+        # nderecos_criados = []
+        if data_endereco:
+            cliente_endereco = ClienteEndereco(
+                **data_endereco, cliente_id=cliente_pessoa.id
+            )
+            # enderecos_criados.append(cliente_endereco)
+            # relacionar o endereco com o cliente aqui
+            self.dbSession.add(cliente_endereco)
+
         await self.dbSession.commit()
-        await self.dbSession.refresh(cliente_pessoa)
+        await self.dbSession.refresh(cliente_pessoa, attribute_names=["enderecos"])
 
-        logger.debug(cliente_pessoa)
-        logger.debug(f"endereço {data_enderecos}")
+        # provavelmente fazer so um commit aqui
 
-        return
+        return cliente_pessoa

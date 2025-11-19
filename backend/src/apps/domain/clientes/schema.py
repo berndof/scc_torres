@@ -1,13 +1,32 @@
-from pydantic import ConfigDict, EmailStr, Field
+from pydantic import ConfigDict, EmailStr, Field, constr
 
-from core.schema import BaseSchema, ModelSchema, OptionalEnderecoSchema
+from core.schema import BaseSchema, ModelSchema
 
 from .model import TipoCliente
 
 
-class ClienteResponse(ModelSchema):
-    name: str
-    tipo: TipoCliente
+class ClienteEnderecoOut(ModelSchema):
+    id: int
+    logradouro: str | None
+    numero: int | None
+    complemento: str
+    bairro: str | None
+    cidade: str | None
+    estado: str | None
+    cep: str | None
+    latitude: float | None
+    longitude: float | None
+
+
+# Cliente Pessoa de retorno
+class NewClientePessoa(ModelSchema):
+    id: int
+    first_name: str
+    last_name: str
+    cpf: str
+    telefone: str | None
+    email: EmailStr | None
+    enderecos: list[ClienteEnderecoOut] = []
 
 
 class ClienteEnderecoCreate(BaseSchema):
@@ -41,27 +60,18 @@ class ClienteEnderecoCreate(BaseSchema):
 
 
 class ClientePessoaCreate(BaseSchema):
-    model_config = ConfigDict(
-        json_schema_extra={
-            "example": {
-                "tipo": "pf",
-                "first_name": "Ana",
-                "last_name": "Silva",
-                "cpf": "12345678901",
-                "telefone": "11987654321",
-                "email": "ana@example.com",
-            }
-        }
+    first_name: str = Field(..., min_length=1, max_length=120, examples=["Ana"])
+    last_name: str = Field(..., min_length=1, max_length=120, examples=["Silva"])
+
+    cpf: str = Field(
+        ..., min_length=11, max_length=11, pattern=r"^\d{11}$", examples=["12345678910"]
     )
+    telefone: str | None = Field(
+        ..., min_length=8, max_length=20, pattern=r"^\d+$", examples=[11987654321]
+    )
+    email: EmailStr | None = Field(..., examples=["example@exam.com"])
 
-    first_name: str = Field(..., min_length=1, max_length=120)
-    last_name: str = Field(..., min_length=1, max_length=120)
-
-    cpf: str = Field(..., min_length=11, max_length=11, pattern=r"^\d{11}$")
-    telefone: str | None = Field(None, min_length=8, max_length=20, pattern=r"^\d+$")
-    email: EmailStr | None = None
-
-    enderecos: list[ClienteEnderecoCreate] | None = []
+    endereco: ClienteEnderecoCreate | None = Field(...)
 
 
 class ClienteEmpresaContatoCreate(BaseSchema):
@@ -101,5 +111,5 @@ class ClienteEmpresaCreate(BaseSchema):
     telefone: str | None = Field(None, min_length=8, max_length=20, pattern=r"^\d+$")
     email: EmailStr | None = None
 
-    enderecos: list[ClienteEnderecoCreate] | None = []
+    enderecos: ClienteEnderecoCreate | None = Field(...)
     contatos: list[ClienteEmpresaContatoCreate] | None = []
