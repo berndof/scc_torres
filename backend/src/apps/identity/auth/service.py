@@ -6,8 +6,8 @@ from ldap3.core.exceptions import LDAPBindError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from apps.identity.user.model import User
-from apps.identity.user.repository import UserRepository
 from apps.identity.user.schema import UserCreate
+from apps.identity.user.service import UserService
 from core.ldap_client import ldap_get_user_info
 from core.security import create_access_token, verify_password
 
@@ -20,7 +20,7 @@ logger.setLevel("DEBUG")
 class AuthService:
     def __init__(self, dbSession: AsyncSession):
         self.dbSession = dbSession
-        self.user_repo = UserRepository(self.dbSession)
+        self.user_service = UserService(self.dbSession)
 
     async def login(self, data: OAuth2PasswordRequestForm) -> AccessToken:
         login_type = "local"
@@ -35,7 +35,7 @@ class AuthService:
             raise HTTPException(401, "metodo de login nao é suportado")
 
     async def local_login(self, data: OAuth2PasswordRequestForm) -> AccessToken:
-        user = await self.user_repo.get_by_username(username=data.username)
+        user = await self.user_service.get_by_username(username=data.username)
         if user:
             if not verify_password(data.password, user.password):
                 raise HTTPException(401, "Wrong password")
@@ -45,8 +45,11 @@ class AuthService:
         return self.get_access_token(user.id)
 
     async def ldap_login(self, data: OAuth2PasswordRequestForm) -> AccessToken:
+        if not data.username and not data.password:
+            raise Exception("NUNCA DEVERIA TER CHEGO AQUI")
+
         username = str(data.username).lower()
-        password = data.password
+        password = str(data.password)
 
         try:
             ldap_user_data = await ldap_get_user_info(username, password)
@@ -59,15 +62,19 @@ class AuthService:
             # logger.error("PROBLEMA COLETANDO OS DADOS DO USUARIO")
             raise
 
-        user = await self.user_repo.get_by_username(username, from_ad=True)
+        user = await self.user_service.get_by_username(username, from_ad=True)
         if not user:
             # logger.debug("VAI TER QUE CRIAR USUARIO")
-            new_user_data = UserCreate(
-                username=username, password="stored_on_ad", from_ad=True
-            )
+            # TODO pegar dados novos do usuário
 
-            user = await self.user_repo.create(User(**new_user_data.model_dump()))
+            new_user = User(username=username, password="stored_on_ad")
 
+            # Handle erro de repetidos
+            # TODO
+            self.dbSession.add(new_user)
+
+            await self.dbSession.commit()
+            await self.dbSession.refresh(new_user)
             # logger.debug("USUÁRIO DO AD CRIADO NO SISTEMA")
 
             # se o user ja existir, atualizar as informações consumindo o ldap_user_data
