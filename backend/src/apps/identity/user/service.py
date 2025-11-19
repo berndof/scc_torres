@@ -1,3 +1,5 @@
+from sqlalchemy import select
+
 from core.security import hash_password
 
 from .model import User
@@ -23,3 +25,9 @@ class UserService:
 
         response = NewUserResponse.model_validate(new_user)
         return response
+
+    async def get_by_id(self, id):
+        stmt = select(User).where(User.id == id)
+        result = await self.dbSession.execute(stmt)
+        user = result.scalar_on_or_none()
+        return user

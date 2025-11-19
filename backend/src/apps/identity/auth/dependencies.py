@@ -1,7 +1,7 @@
 from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 
-from apps.identity.user.repository import UserRepository
+from apps.identity.user.service import UserService
 from core.db import AsyncSession, get_db_session
 from core.security import decode_token
 
@@ -23,8 +23,8 @@ async def get_current_user(
     if not payload or "sub" not in payload:
         raise HTTPException(401, "Invalid token")
 
-    user_repo = UserRepository(dbSession)
-    user = await user_repo.get_by_id(payload["sub"])
+    user_service = UserService(dbSession)
+    user = await user_service.get_by_id(payload["sub"])
     if not user:
         raise HTTPException(401, "User not found")
 
