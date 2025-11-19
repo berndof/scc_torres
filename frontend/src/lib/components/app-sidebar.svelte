@@ -30,14 +30,14 @@
 		],
 		navMain: [
 		{
-			title: "Playground",
+			title: "Clientes",
 			url: "#",
 			icon: SquareTerminalIcon,
 			isActive: true,
 			items: [
 			{
-				title: "History",
-				url: "#",
+				title: "Novo Cliente",
+				url: "/home/clientes",
 			},
 			{
 				title: "Starred",

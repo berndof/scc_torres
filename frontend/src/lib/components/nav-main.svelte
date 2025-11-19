@@ -2,7 +2,7 @@
 	import * as Collapsible from "$lib/components/ui/collapsible/index.js";
 	import * as Sidebar from "$lib/components/ui/sidebar/index.js";
 	import ChevronRightIcon from "@lucide/svelte/icons/chevron-right";
-
+	import { goto } from "$app/navigation";
 	let {
 		items,
 	}: {
@@ -45,7 +45,7 @@
 							<Sidebar.MenuSub>
 								{#each item.items ?? [] as subItem (subItem.title)}
 									<Sidebar.MenuSubItem>
-										<Sidebar.MenuSubButton>
+										<Sidebar.MenuSubButton on:click={() => goto(subItem.url)}>
 											{#snippet child({ props })}
 												<a href={subItem.url} {...props}>
 													<span>{subItem.title}</span>

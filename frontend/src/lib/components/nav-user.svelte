@@ -12,6 +12,11 @@
 
 	let { user }: { user: { username: string } } = $props();
 	//let user = $props();
+	const handleLogout = () => {
+		fetch("/logout", { method: "POST" }).then(() => {
+		window.location.href = "/";
+		});
+	}
 	const sidebar = useSidebar();
 </script>
 
@@ -78,9 +83,13 @@
 					</DropdownMenu.Item>
 				</DropdownMenu.Group>
 				<DropdownMenu.Separator />
-				<DropdownMenu.Item>
+				<DropdownMenu.Item asChild>
+				<form method="POST" action="/logout">
+					<button type="submit" class="flex items-center gap-2 w-full">
 					<LogOutIcon />
 					Log out
+					</button>
+				</form>
 				</DropdownMenu.Item>
 			</DropdownMenu.Content>
 		</DropdownMenu.Root>
