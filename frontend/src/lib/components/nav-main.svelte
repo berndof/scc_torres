@@ -25,40 +25,59 @@
 	<Sidebar.GroupLabel>Platform</Sidebar.GroupLabel>
 	<Sidebar.Menu>
 		{#each items as item (item.title)}
-			<Collapsible.Root open={item.isActive} class="group/collapsible">
-				{#snippet child({ props })}
-					<Sidebar.MenuItem {...props}>
-						<Collapsible.Trigger>
-							{#snippet child({ props })}
-								<Sidebar.MenuButton {...props} tooltipContent={item.title}>
-									{#if item.icon}
-										<item.icon />
-									{/if}
-									<span>{item.title}</span>
-									<ChevronRightIcon
-										class="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90"
-									/>
-								</Sidebar.MenuButton>
-							{/snippet}
-						</Collapsible.Trigger>
-						<Collapsible.Content>
-							<Sidebar.MenuSub>
-								{#each item.items ?? [] as subItem (subItem.title)}
-									<Sidebar.MenuSubItem>
-										<Sidebar.MenuSubButton on:click={() => goto(subItem.url)}>
-											{#snippet child({ props })}
-												<a href={subItem.url} {...props}>
-													<span>{subItem.title}</span>
-												</a>
-											{/snippet}
-										</Sidebar.MenuSubButton>
-									</Sidebar.MenuSubItem>
-								{/each}
-							</Sidebar.MenuSub>
-						</Collapsible.Content>
-					</Sidebar.MenuItem>
-				{/snippet}
-			</Collapsible.Root>
+			{#if (item.items?.length ?? 0) > 0}
+				<!-- ITEM COM SUBITENS -->
+				<Collapsible.Root open={item.isActive} class="group/collapsible">
+					{#snippet child({ props })}
+						<Sidebar.MenuItem {...props} >
+							<Collapsible.Trigger class="cursor-pointer">
+								{#snippet child({ props })}
+									<Sidebar.MenuButton {...props} tooltipContent={item.title}>
+										{#if item.icon}
+											<item.icon />
+										{/if}
+										<span>{item.title}</span>
+										<ChevronRightIcon
+											class="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90"
+										/>
+									</Sidebar.MenuButton>
+								{/snippet}
+							</Collapsible.Trigger>
+							<Collapsible.Content>
+								<Sidebar.MenuSub>
+									{#each item.items ?? [] as subItem (subItem.title)}
+										<Sidebar.MenuSubItem>
+											<Sidebar.MenuSubButton onclick={() => goto(subItem.url)} class="cursor-pointer">
+												{#snippet child({ props })}
+													<!-- <a href={subItem.url} {...props}> -->
+													<a {...props}>
+														<span>{subItem.title}</span>
+													</a>
+												{/snippet}
+											</Sidebar.MenuSubButton>
+										</Sidebar.MenuSubItem>
+									{/each}
+								</Sidebar.MenuSub>
+							</Collapsible.Content>
+						</Sidebar.MenuItem>
+					{/snippet}
+				</Collapsible.Root>
+			{:else}
+				<!-- ITEM SEM SUBITENS -->
+				<Sidebar.MenuItem>
+					<Sidebar.MenuButton onclick={() => goto(item.url)} tooltipContent={item.title} class="cursor-pointer">
+						{#snippet child({ props })}
+							<!-- <a href={subItem.url} {...props}> -->
+							<a {...props}>
+								{#if item.icon}
+									<item.icon />
+								{/if}
+								<span>{item.title}</span>
+							</a>
+						{/snippet}
+					</Sidebar.MenuButton>
+				</Sidebar.MenuItem>
+			{/if}
 		{/each}
 	</Sidebar.Menu>
 </Sidebar.Group>

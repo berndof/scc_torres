@@ -1,12 +1,11 @@
-import { redirect } from "@sveltejs/kit";
+import { error, redirect } from "@sveltejs/kit";
 import type { LayoutServerLoad, RequestEvent } from "./$types";
 import { API_BASE_URL } from "$env/static/private";
 
+const API_VALIDATE_USER_URL = `${API_BASE_URL}/auth/me`
 
-export const load: LayoutServerLoad = async(event: RequestEvent) => {
+export const load: LayoutServerLoad = async(event) => {
       
-    const API_VALIDATE_USER_URL = `${API_BASE_URL}/auth/me`
-
     const token = event.cookies.get("access_token");
     if (!token) {
         throw redirect(302, "/login") 
@@ -24,8 +23,10 @@ export const load: LayoutServerLoad = async(event: RequestEvent) => {
     }
 
     const user = await res.json();
-    
+
     //TODO montar o data que é o contexto do frontend - e dos componentes como sidebar e header
 
-    return { user }
+    return {
+        user: user,
+    }
 };

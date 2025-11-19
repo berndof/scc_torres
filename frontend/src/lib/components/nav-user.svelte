@@ -83,7 +83,7 @@
 					</DropdownMenu.Item>
 				</DropdownMenu.Group>
 				<DropdownMenu.Separator />
-				<DropdownMenu.Item asChild>
+				<DropdownMenu.Item >
 				<form method="POST" action="/logout">
 					<button type="submit" class="flex items-center gap-2 w-full">
 					<LogOutIcon />

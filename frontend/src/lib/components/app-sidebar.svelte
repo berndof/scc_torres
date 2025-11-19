@@ -8,6 +8,7 @@
 	import GalleryVerticalEndIcon from "@lucide/svelte/icons/gallery-vertical-end";
 	import MapIcon from "@lucide/svelte/icons/map";
 	import Settings2Icon from "@lucide/svelte/icons/settings-2";
+	import House from "@lucide/svelte/icons/house"
 	import SquareTerminalIcon from "@lucide/svelte/icons/square-terminal";
 	// This is sample data.
 	const data = {
@@ -30,14 +31,23 @@
 		],
 		navMain: [
 		{
+			title: "Home",
+			url: "/home",
+			icon: House,
+			isActive: true,
+			items: [
+
+			],
+		},
+		{
 			title: "Clientes",
 			url: "#",
 			icon: SquareTerminalIcon,
-			isActive: true,
+			isActive: false,
 			items: [
 			{
 				title: "Novo Cliente",
-				url: "/home/clientes",
+				url: "/home/cliente/create",
 			},
 			{
 				title: "Starred",
