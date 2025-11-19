@@ -26,8 +26,9 @@ class User(BaseORM):
 
     first_name: Mapped[str] = mapped_column(String(120), nullable=False)
     last_name: Mapped[str] = mapped_column(String(120), nullable=False)
-
-    telefone: Mapped[int] = mapped_column(Integer(), nullable=True)
+    telefone: Mapped[str | None] = mapped_column(
+        String(20), nullable=True, doc="Telefone sem máscara, só dígitos."
+    )
 
     status: Mapped[ObjectStatus] = mapped_column(
         Enum(ObjectStatus), default=ObjectStatus.ENABLE, nullable=False

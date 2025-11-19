@@ -59,12 +59,13 @@ class ClientePessoa(Cliente):
     first_name: Mapped[str] = mapped_column(String(120), nullable=False)
     last_name: Mapped[str] = mapped_column(String(120), nullable=False)
 
-    telefone: Mapped[int] = mapped_column(Integer(), nullable=True)
-    email: Mapped[str] = mapped_column(
+    telefone: Mapped[str | None] = mapped_column(String(20), nullable=True)
+
+    email: Mapped[str | None] = mapped_column(
         String(100), nullable=True, index=True, unique=True
     )
 
-    cpf: Mapped[int] = mapped_column(Integer(), nullable=False, unique=True)
+    cpf: Mapped[str] = mapped_column(String(11), nullable=False, unique=True)
 
     __mapper_args__ = {"polymorphic_identity": TipoCliente.PF}
 
@@ -85,8 +86,8 @@ class ClienteEmpresa(Cliente):
         cascade="all, delete-orphan",
     )
 
-    telefone: Mapped[int] = mapped_column(Integer(), nullable=False)
-    email: Mapped[str] = mapped_column(String(100), nullable=True, index=True)
+    telefone: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    email: Mapped[str | None] = mapped_column(String(100), nullable=True, index=True)
 
     __mapper_args__ = {"polymorphic_identity": TipoCliente.PJ}
 
@@ -106,8 +107,8 @@ class ClienteEmpresaContato(BaseORM):
 
     first_name: Mapped[str] = mapped_column(String(120), nullable=False)
     last_name: Mapped[str] = mapped_column(String(120), nullable=False)
-    telefone: Mapped[int] = mapped_column(Integer(), nullable=False)
-    email: Mapped[str] = mapped_column(String(100), nullable=True, index=True)
+    telefone: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    email: Mapped[str | None] = mapped_column(String(100), nullable=True, index=True)
 
     empresa: Mapped["ClienteEmpresa"] = relationship(back_populates="contatos")
 
@@ -128,7 +129,7 @@ class ClienteEndereco(BaseORM):
     bairro: Mapped[str | None] = mapped_column(String(255))
     cidade: Mapped[str | None] = mapped_column(String(255))
     estado: Mapped[str | None] = mapped_column(String(255))
-    cep: Mapped[int | None] = mapped_column(Integer)
+    cep: Mapped[str | None] = mapped_column(String(8))
 
     cliente: Mapped["Cliente"] = relationship(back_populates="enderecos")
 
