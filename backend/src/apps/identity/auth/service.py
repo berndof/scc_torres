@@ -82,7 +82,7 @@ class AuthService:
             telefone = None
             email = ldap_user_data.get("mail")
 
-            new_user = User(
+            user = User(
                 username=username,
                 password="stored_on_ad",
                 from_ad=True,
@@ -93,19 +93,19 @@ class AuthService:
             )
 
             # Handle erro de repetidos
-            # TODO
-            self.dbSession.add(new_user)
+            # TOD
+            self.dbSession.add(user)
 
             await self.dbSession.commit()
-            await self.dbSession.refresh(new_user)
+            await self.dbSession.refresh(user)
             # logger.debug("USUÁRIO DO AD CRIADO NO SISTEMA")
             # TODO
             # se o user ja existir, atualizar as informações consumindo o ldap_user_data
 
-        # if type(new_user) is not User:
-        #   raise Exception("USER NAO FOI CRIADO ")
+        if type(user) is not User:
+            raise Exception("USER NAO FOI CRIADO ")
         # logger.debug("ACHOU USUARIO")
-        return self.get_access_token(new_user.id)
+        return self.get_access_token(user.id)
 
     def get_access_token(self, user_id):
         session_payload = {"sub": str(user_id)}
