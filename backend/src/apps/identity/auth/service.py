@@ -102,10 +102,10 @@ class AuthService:
             # TODO
             # se o user ja existir, atualizar as informações consumindo o ldap_user_data
 
-        if type(user) is not User:
+        if type(new_user) is not User:
             raise Exception("USER NAO FOI CRIADO ")
         # logger.debug("ACHOU USUARIO")
-        return self.get_access_token(user.id)
+        return self.get_access_token(new_user.id)
 
     def get_access_token(self, user_id):
         session_payload = {"sub": str(user_id)}

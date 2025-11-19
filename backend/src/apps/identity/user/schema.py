@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
+from pydantic import ConfigDict, EmailStr, Field
 
 from core.schema import BaseSchema, ModelSchema
 
