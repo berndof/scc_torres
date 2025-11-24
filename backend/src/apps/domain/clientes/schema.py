@@ -30,25 +30,9 @@ class NewClientePessoa(ModelSchema):
 
 
 class ClienteEnderecoCreate(BaseSchema):
-    """model_config = ConfigDict(
-        json_schema_extra={
-            "example": {
-                "logradouro": "Av Paulista",
-                "numero": 1000,
-                "complemento": "Ap 12",
-                "bairro": "Bela Vista",
-                "cidade": "São Paulo",
-                "estado": "SP",
-                "cep": "01311000",
-                "latitude": -23.561684,
-                "longitude": -46.656139,
-            }
-        }
-    )"""
-
     logradouro: str | None = Field(..., max_length=255)
     numero: int | None = Field(...)
-    complemento: str | None = Field(..., max_length=255)
+    # complemento: str | None = Field(..., max_length=255)
     bairro: str | None = Field(..., max_length=255)
     cidade: str | None = Field(..., max_length=255)
     estado: str | None = Field(..., max_length=255)
@@ -71,7 +55,7 @@ class ClientePessoaCreate(BaseSchema):
     )
     email: EmailStr | None = Field(..., examples=["example@exam.com"])
 
-    endereco: ClienteEnderecoCreate | None = Field(...)
+    endereco: ClienteEnderecoCreate | None = None
 
 
 class ClienteEmpresaContatoCreate(BaseSchema):
