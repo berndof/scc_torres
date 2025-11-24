@@ -26,11 +26,11 @@ class NewClientePessoa(ModelSchema):
     cpf: str
     telefone: str | None
     email: EmailStr | None
-    enderecos: list[ClienteEnderecoOut] | None = []
+    # enderecos: list[ClienteEnderecoOut] | None = []
 
 
 class ClienteEnderecoCreate(BaseSchema):
-    model_config = ConfigDict(
+    """model_config = ConfigDict(
         json_schema_extra={
             "example": {
                 "logradouro": "Av Paulista",
@@ -44,16 +44,16 @@ class ClienteEnderecoCreate(BaseSchema):
                 "longitude": -46.656139,
             }
         }
-    )
+    )"""
 
-    logradouro: str | None = Field(None, max_length=255)
-    numero: int | None = None
-    complemento: str | None = Field(None, max_length=255)
-    bairro: str | None = Field(None, max_length=255)
-    cidade: str | None = Field(None, max_length=255)
-    estado: str | None = Field(None, max_length=255)
+    logradouro: str | None = Field(..., max_length=255)
+    numero: int | None = Field(...)
+    complemento: str | None = Field(..., max_length=255)
+    bairro: str | None = Field(..., max_length=255)
+    cidade: str | None = Field(..., max_length=255)
+    estado: str | None = Field(..., max_length=255)
 
-    cep: str | None = Field(None, min_length=8, max_length=8, pattern=r"^\d{8}$")
+    cep: str | None = Field(..., min_length=8, max_length=8, pattern=r"^\d{8}$")
 
     # latitude: float | None = None
     # longitude: float | None = None
