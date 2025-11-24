@@ -46,12 +46,12 @@
 			isActive: false,
 			items: [
 			{
-				title: "Novo Cliente",
-				url: "/home/cliente/create",
+				title: "Ver Clientes",
+				url: "/home/cliente/list",
 			},
 			{
-				title: "Starred",
-				url: "#",
+				title: "Novo Cliente",
+				url: "/home/cliente/create",
 			},
 			{
 				title: "Settings",

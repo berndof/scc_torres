@@ -9,12 +9,12 @@
 	import CreditCardIcon from "@lucide/svelte/icons/credit-card";
 	import LogOutIcon from "@lucide/svelte/icons/log-out";
 	import SparklesIcon from "@lucide/svelte/icons/sparkles";
-
+	import { goto } from "$app/navigation";
 	let { user }: { user: { username: string } } = $props();
 	//let user = $props();
 	const handleLogout = () => {
 		fetch("/logout", { method: "POST" }).then(() => {
-		window.location.href = "/";
+		goto("/home");
 		});
 	}
 	const sidebar = useSidebar();
@@ -83,13 +83,11 @@
 					</DropdownMenu.Item>
 				</DropdownMenu.Group>
 				<DropdownMenu.Separator />
-				<DropdownMenu.Item >
-				<form method="POST" action="/logout">
-					<button type="submit" class="flex items-center gap-2 w-full">
+				<DropdownMenu.Item
+  					onclick={() => fetch('/logout', { method: "POST" }).then(() => goto('/'))}
+				>
 					<LogOutIcon />
 					Log out
-					</button>
-				</form>
 				</DropdownMenu.Item>
 			</DropdownMenu.Content>
 		</DropdownMenu.Root>
