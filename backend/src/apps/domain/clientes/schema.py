@@ -6,7 +6,7 @@ from .model import TipoCliente
 
 
 class ClienteEnderecoOut(ModelSchema):
-    id: int
+    # id: int
     logradouro: str | None
     numero: int | None
     complemento: str
@@ -26,7 +26,7 @@ class NewClientePessoa(ModelSchema):
     cpf: str
     telefone: str | None
     email: EmailStr | None
-    enderecos: list[ClienteEnderecoOut] = []
+    enderecos: list[ClienteEnderecoOut] | None = []
 
 
 class ClienteEnderecoCreate(BaseSchema):
