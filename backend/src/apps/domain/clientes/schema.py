@@ -1,21 +1,21 @@
+from typing import Annotated, List, Literal, Union
+
 from pydantic import ConfigDict, EmailStr, Field, constr
 
 from core.schema import BaseSchema, ModelSchema
-
-from .model import TipoCliente
 
 
 class ClienteEnderecoOut(ModelSchema):
     # id: int
     logradouro: str | None
     numero: int | None
-    complemento: str
+    # complemento: str | None
     bairro: str | None
     cidade: str | None
     estado: str | None
     cep: str | None
-    latitude: float | None
-    longitude: float | None
+    # latitude: float | None
+    # longitude: float | None
 
 
 # Cliente Pessoa de retorno
@@ -95,5 +95,54 @@ class ClienteEmpresaCreate(BaseSchema):
     telefone: str | None = Field(None, min_length=8, max_length=20, pattern=r"^\d+$")
     email: EmailStr | None = None
 
-    enderecos: ClienteEnderecoCreate | None = Field(...)
+    enderecos: ClienteEnderecoCreate | None = None
     contatos: list[ClienteEmpresaContatoCreate] | None = []
+
+
+class ClienteList(BaseSchema): ...
+
+
+class ClientePessoaOut(ModelSchema):
+    # model_config = {"use_enum_values": True}
+    ...
+    tipo: Literal["pf"]
+    id: int
+    first_name: str
+    last_name: str
+    telefone: str | None
+    email: str | None
+    cpf: str
+
+    # enderecos: list[ClienteEnderecoOut]
+
+
+class ClienteBaseOut(ModelSchema):
+    model_config = {"populate_by_name": True}
+    tipo: str
+
+
+class ClienteEmpresaContatoOut(ClienteBaseOut):
+    id: int
+    first_name: str
+    last_name: str
+    telefone: str | None
+    email: str | None
+
+
+class ClienteEmpresaOut(ClienteBaseOut):
+    # model_config = {"use_enum_values": True}
+    ...
+    tipo: Literal["pj"]
+    id: int
+    razao_social: str
+    cnpj: str
+    telefone: str | None
+    email: str | None
+    contatos: list[ClienteEmpresaContatoOut]
+    enderecos: list[ClienteEnderecoOut]
+
+
+ClienteOut = Annotated[
+    Union[ClientePessoaOut, ClienteEmpresaOut],
+    Field(discriminator="tipo"),
+]

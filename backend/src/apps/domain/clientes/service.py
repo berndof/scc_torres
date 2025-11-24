@@ -1,9 +1,12 @@
 from logging import getLogger
 
+from pydantic import TypeAdapter
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import joinedload, selectinload, with_polymorphic
 
-from .model import ClienteEndereco, ClientePessoa
-from .schema import ClientePessoaCreate
+from .model import Cliente, ClienteEmpresa, ClienteEndereco, ClientePessoa
+from .schema import ClienteOut, ClientePessoaCreate
 
 logger = getLogger("app.cliente.service")
 # logger.setLevel("DEBUG")
@@ -54,3 +57,21 @@ class ClienteService:
         # provavelmente fazer so um commit aqui
 
         return cliente_pessoa
+
+    async def list_clientes(self):
+        ClienteWP = with_polymorphic(Cliente, [ClientePessoa, ClienteEmpresa])
+        stmt = select(ClienteWP)
+        result = await self.dbSession.execute(stmt)
+        clientes = result.scalars().all()
+        # print(clientes)
+        for c in clientes:
+            if isinstance(c, ClientePessoa):
+                print("PF:", c.id, c.cpf, c.first_name, c.last_name)
+
+            if isinstance(c, ClienteEmpresa):
+                print("PJ:", c.id, c.cnpj, c.razao_social)
+
+            if hasattr(c, "tipo") and hasattr(c.tipo, "value"):
+                c.tipo = c.tipo.value
+
+        return clientes

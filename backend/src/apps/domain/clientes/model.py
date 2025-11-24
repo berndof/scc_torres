@@ -15,6 +15,7 @@ class TipoCliente(enum.Enum):
 
 class Cliente(BaseORM):
     __tablename__ = "clientes"
+
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
 
     # property name = fullname se pf razao_social se pj
